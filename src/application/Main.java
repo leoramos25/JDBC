@@ -10,8 +10,8 @@ import java.sql.Statement;
 public class Main {
     public static void main(String[] args) {
         Connection connection;
-        Statement statement;
-        ResultSet resultSet;
+        Statement statement = null;
+        ResultSet resultSet = null;
 
         try {
             connection = DB.getConnection();
@@ -22,6 +22,10 @@ public class Main {
             }
         } catch (SQLException exception) {
             exception.printStackTrace();
+        } finally {
+            DB.closeResultSet(resultSet);
+            DB.closeStatement(statement);
+            DB.closeConnection();
         }
     }
 }
