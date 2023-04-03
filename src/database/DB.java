@@ -10,25 +10,28 @@ import java.util.Properties;
 public class DB {
     private static final String DB_PROPERTIES_PATH = "db.properties";
 
-    private static final Connection CONNECTION = null;
+    private static Connection connection = null;
+
+    private DB() {
+    }
 
     public static Connection getConnection() {
-        try {
-            if (CONNECTION == null) {
+        if (connection == null) {
+            try {
                 Properties properties = loadProperties();
                 String url = properties.getProperty("dburl");
-                DriverManager.getConnection(url, properties);
+                connection = DriverManager.getConnection(url, properties);
+            } catch (SQLException exception) {
+                throw new DbException(exception.getMessage());
             }
-        } catch (SQLException exception) {
-            throw new DbException(exception.getMessage());
         }
-        return CONNECTION;
+        return connection;
     }
 
     public static void closeConnection() {
         try {
-            if (CONNECTION != null) {
-                CONNECTION.close();
+            if (connection != null) {
+                connection.close();
             }
         } catch (SQLException exception) {
             throw new DbException(exception.getMessage());
